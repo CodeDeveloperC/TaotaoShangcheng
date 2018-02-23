@@ -59,7 +59,7 @@ public class HomeFragment extends Fragment {
 
     private HomeCatgoryAdapter mAdatper;
 
-    private Gson mGson;
+    private Gson mGson=new Gson();
     private List<Banner> mBanners;
 
     @Nullable
@@ -171,53 +171,6 @@ public class HomeFragment extends Fragment {
             }
         }
 
-
-//        TextSliderView textSliderView = new TextSliderView(this.getActivity());
-//        textSliderView.image("https://img30.360buyimg.com/da/jfs/t16249/28/1863619628/144632/38742576/5a70263bNafc80cbf.jpg");
-//        textSliderView.description("新品推荐");
-//        textSliderView.setOnSliderClickListener(new BaseSliderView.OnSliderClickListener() {
-//            @Override
-//            public void onSliderClick(BaseSliderView baseSliderView) {
-//
-//                Toast.makeText(HomeFragment.this.getActivity(), "新品推荐", Toast.LENGTH_LONG).show();
-//
-//            }
-//        });
-//
-//        TextSliderView textSliderView2 = new TextSliderView(this.getActivity());
-//        textSliderView2.image("https://aecpm.alicdn.com/simba/img/TB1W4nPJFXXXXbSXpXXSutbFXXX.jpg");
-//        textSliderView2.description("时尚男装");
-//
-//        textSliderView2.setOnSliderClickListener(new BaseSliderView.OnSliderClickListener() {
-//            @Override
-//            public void onSliderClick(BaseSliderView baseSliderView) {
-//
-//                Toast.makeText(HomeFragment.this.getActivity(), "时尚男装", Toast.LENGTH_LONG).show();
-//
-//            }
-//        });
-//
-//
-//        TextSliderView textSliderView3 = new TextSliderView(this.getActivity());
-//        textSliderView3.image("https://aecpm.alicdn.com/simba/img/TB1_JXrLVXXXXbZXVXXSutbFXXX.jpg");
-//        textSliderView3.description("家电秒杀");
-//
-//
-//        textSliderView3.setOnSliderClickListener(new BaseSliderView.OnSliderClickListener() {
-//            @Override
-//            public void onSliderClick(BaseSliderView baseSliderView) {
-//
-//                Toast.makeText(HomeFragment.this.getActivity(), "家电秒杀", Toast.LENGTH_LONG).show();
-//
-//            }
-//        });
-
-
-//        mSlider.addSlider(textSliderView);
-//        mSlider.addSlider(textSliderView2);
-//        mSlider.addSlider(textSliderView3);
-
-//        mSlider.setPresetIndicator(SliderLayout.PresetIndicators.Center_Bottom);
 
         mSlider.setCustomIndicator(mCustomIndicator);
         mSlider.setCustomAnimation(new DescriptionAnimation());

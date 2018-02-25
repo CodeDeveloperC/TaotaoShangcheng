@@ -1,8 +1,9 @@
 <resources>
-    <string name="app_name">CNiao5Shop</string>
+    <string name="app_name">TaoTaoShangcheng</string>
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="title_activity_test">title_activity_test</string>
 
     <string name="home">主页</string>
     <string name="hot">热卖</string>

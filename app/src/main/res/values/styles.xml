@@ -59,7 +59,7 @@
         <item name="android:gravity">center</item>
         <item name="android:paddingLeft">@dimen/largePadding</item>
         <item name="android:paddingRight">@dimen/largePadding</item>
-        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:minHeight">@dimen/normalButtonHeight</item>
     </style>

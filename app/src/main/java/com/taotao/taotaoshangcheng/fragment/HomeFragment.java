@@ -26,11 +26,17 @@ import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 import com.taotao.taotaoshangcheng.BuildConfig;
+import com.taotao.taotaoshangcheng.Contants;
 import com.taotao.taotaoshangcheng.R;
 import com.taotao.taotaoshangcheng.adapter.DividerItemDecortion;
 import com.taotao.taotaoshangcheng.adapter.HomeCatgoryAdapter;
 import com.taotao.taotaoshangcheng.bean.Banner;
+import com.taotao.taotaoshangcheng.bean.Campaign;
+import com.taotao.taotaoshangcheng.bean.HomeCampaign;
 import com.taotao.taotaoshangcheng.bean.HomeCategory;
+import com.taotao.taotaoshangcheng.http.BaseCallback;
+import com.taotao.taotaoshangcheng.http.OkHttpHelper;
+import com.taotao.taotaoshangcheng.http.SpotsCallBack;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -58,9 +64,11 @@ public class HomeFragment extends Fragment {
     RecyclerView mRecyclerView;
 
     private HomeCatgoryAdapter mAdatper;
+    private OkHttpHelper mOkHttpHelper = OkHttpHelper.getInstance();
 
-    private Gson mGson=new Gson();
+    private Gson mGson = new Gson();
     private List<Banner> mBanners;
+
 
     @Nullable
     @Override
@@ -76,46 +84,92 @@ public class HomeFragment extends Fragment {
         return view;
     }
 
-    private  void requestImages(){
+    private void requestImages() {
 
-        String url ="http://112.124.22.238:8081/course_api/banner/query?type=1";
+        String url = "http://112.124.22.238:8081/course_api/banner/query?type=1";
+//
+//
+//        OkHttpClient client = new OkHttpClient();
+//
+//        RequestBody body = new FormEncodingBuilder()
+//                .add("type","1")
+//
+//                .build();
+//
+//
+//        Request request = new Request.Builder()
+//                .url(url)
+//                .post(body)
+//                .build();
+//
+//        client.newCall(request).enqueue(new Callback() {
+//            @Override
+//            public void onFailure(Request request, IOException e) {
+//
+//            }
+//
+//            @Override
+//            public void onResponse(Response response) throws IOException {
+//                if (response.isSuccessful()) {
+//                    String json = response.body().string();
+//
+//                    Type type = new TypeToken<List<Banner>>() {
+//                    }.getType();
+//
+//                    mBanners = mGson.fromJson(json, type);
+//                    initSlider();
+//
+////                    Log.d(TAG, "json= " + json);
+//                }
+//            }
+//        });
 
+//        mOkHttpHelper.get(url, new BaseCallback<List<Banner>>() {
+//            @Override
+//            public void onBeforeRequest(Request request) {
+//
+//            }
+//
+//            @Override
+//            public void onFailure(Request request, Exception e) {
+//
+//            }
+//
+//            @Override
+//            public void onResponse(Response response) {
+//
+//            }
+//
+//            @Override
+//            public void onSuccess(Response response, List<Banner> banners) {
+//                mBanners = banners;
+//
+//                Log.d(TAG, "Success");
+//
+//                initSlider();
+//            }
+//
+//
+//            @Override
+//            public void onError(Response response, int code, Exception e) {
+//
+//            }
+//        });
 
-        OkHttpClient client = new OkHttpClient();
+        mOkHttpHelper.get(url, new SpotsCallBack<List<Banner>>(getContext()) {
 
-        RequestBody body = new FormEncodingBuilder()
-                .add("type","1")
-
-                .build();
-
-
-        Request request = new Request.Builder()
-                .url(url)
-                .post(body)
-                .build();
-
-        client.newCall(request).enqueue(new Callback() {
             @Override
-            public void onFailure(Request request, IOException e) {
-
+            public void onSuccess(Response response, List<Banner> banners) {
+                mBanners = banners;
+                Log.d(TAG, "Success");
+                initSlider();
             }
 
             @Override
-            public void onResponse(Response response) throws IOException {
-                if (response.isSuccessful()) {
-                    String json = response.body().string();
-
-                    Type type = new TypeToken<List<Banner>>() {
-                    }.getType();
-
-                    mBanners = mGson.fromJson(json, type);
-                    initSlider();
-
-//                    Log.d(TAG, "json= " + json);
-                }
+            public void onError(Response response, int code, Exception e) {
+                Log.d(TAG, "UnSuccess");
             }
         });
-
 
 
     }
@@ -123,24 +177,70 @@ public class HomeFragment extends Fragment {
 
     private void initRecyclerView() {
 
-        List<HomeCategory> datas = new ArrayList<>(15);
+//        List<HomeCategory> datas = new ArrayList<>(15);
+//
+//        HomeCategory category = new HomeCategory("热门活动",R.drawable.img_big_1,R.drawable.img_1_small1,R.drawable.img_1_small2);
+//        datas.add(category);
+//
+//        category = new HomeCategory("有利可图",R.drawable.img_big_4,R.drawable.img_4_small1,R.drawable.img_4_small2);
+//        datas.add(category);
+//        category = new HomeCategory("品牌街",R.drawable.img_big_2,R.drawable.img_2_small1,R.drawable.img_2_small2);
+//        datas.add(category);
+//
+//        category = new HomeCategory("金融街 包赚翻",R.drawable.img_big_1,R.drawable.img_3_small1,R.drawable.imag_3_small2);
+//        datas.add(category);
+//
+//        category = new HomeCategory("超值购",R.drawable.img_big_0,R.drawable.img_0_small1,R.drawable.img_0_small2);
+//        datas.add(category);
+//
+//
+//        mAdatper = new HomeCatgoryAdapter(datas);
+//
+//        mRecyclerView.setAdapter(mAdatper);
+//
+//        //addItemDecoration方法添加分割线
+//        mRecyclerView.addItemDecoration(new DividerItemDecortion());
+//
+//        mRecyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
 
-        HomeCategory category = new HomeCategory("热门活动",R.drawable.img_big_1,R.drawable.img_1_small1,R.drawable.img_1_small2);
-        datas.add(category);
+        mOkHttpHelper.get(Contants.API.CAMPAIGN_HOME, new BaseCallback<List<HomeCampaign>>() {
+            @Override
+            public void onBeforeRequest(Request request) {
 
-        category = new HomeCategory("有利可图",R.drawable.img_big_4,R.drawable.img_4_small1,R.drawable.img_4_small2);
-        datas.add(category);
-        category = new HomeCategory("品牌街",R.drawable.img_big_2,R.drawable.img_2_small1,R.drawable.img_2_small2);
-        datas.add(category);
+            }
 
-        category = new HomeCategory("金融街 包赚翻",R.drawable.img_big_1,R.drawable.img_3_small1,R.drawable.imag_3_small2);
-        datas.add(category);
+            @Override
+            public void onFailure(Request request, Exception e) {
 
-        category = new HomeCategory("超值购",R.drawable.img_big_0,R.drawable.img_0_small1,R.drawable.img_0_small2);
-        datas.add(category);
+            }
+
+            @Override
+            public void onResponse(Response response) {
+
+            }
+
+            @Override
+            public void onSuccess(Response response, List<HomeCampaign> homeCampaigns) {
+                initData(homeCampaigns);
+            }
 
 
-        mAdatper = new HomeCatgoryAdapter(datas);
+            @Override
+            public void onError(Response response, int code, Exception e) {
+
+            }
+        });
+
+    }
+
+    private void initData(List<HomeCampaign> homeCampaigns) {
+        mAdatper = new HomeCatgoryAdapter(homeCampaigns, getActivity());
+        mAdatper.setOnCampaignClickListener(new HomeCatgoryAdapter.onCampaignClickListener() {
+            @Override
+            public void onClick(View view, Campaign campaign) {
+                Toast.makeText(getActivity(), campaign.getTitle(), Toast.LENGTH_SHORT).show();
+            }
+        });
 
         mRecyclerView.setAdapter(mAdatper);
 
@@ -148,7 +248,6 @@ public class HomeFragment extends Fragment {
         mRecyclerView.addItemDecoration(new DividerItemDecortion());
 
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this.getActivity()));
-
     }
 
     private void initSlider() {
@@ -206,4 +305,6 @@ public class HomeFragment extends Fragment {
         super.onDestroyView();
         unbinder.unbind();
     }
+
+
 }

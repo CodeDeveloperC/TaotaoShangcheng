@@ -49,6 +49,7 @@ public class OkHttpHelper {
 
             mGson = new Gson();
 
+            //更新UI
             mHandler = new Handler(Looper.getMainLooper());
 
         };
@@ -61,7 +62,6 @@ public class OkHttpHelper {
 
 
         public void get(String url,BaseCallback callback){
-
 
             Request request = buildGetRequest(url);
 

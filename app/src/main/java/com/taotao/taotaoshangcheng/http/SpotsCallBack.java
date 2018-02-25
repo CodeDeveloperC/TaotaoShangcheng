@@ -15,11 +15,12 @@ public abstract class SpotsCallBack<T> extends BaseCallback<T> {
 
     private  SpotsDialog mDialog;
 
-    public SpotsCallBack(Context context){
+    public SpotsCallBack(Context context)  {
 
         mContext = context;
 
         initSpotsDialog();
+
     }
 
 

@@ -50,15 +50,6 @@ dependencies {
     compile 'com.w4lle.library:NineLayout:1.0.0'
 
 
-
-
-
-
-
-
-
-
-
 }
 
 //加入下面这段代码

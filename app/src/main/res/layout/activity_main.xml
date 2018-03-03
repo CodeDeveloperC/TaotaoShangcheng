@@ -8,6 +8,7 @@
 
 
     <com.taotao.taotaoshangcheng.weight.CnToolBar
+        android:id="@+id/toolbar1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="?attr/colorPrimary"
@@ -46,3 +47,5 @@
 
 
 </LinearLayout>
+
+    <!--app:isShowSearchView="true"-->

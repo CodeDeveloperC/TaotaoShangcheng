@@ -1,8 +1,10 @@
 package com.taotao.taotaoshangcheng.weight;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.TintTypedArray;
 import android.support.v7.widget.Toolbar;
@@ -11,6 +13,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -31,7 +34,7 @@ public class CnToolBar extends Toolbar {
     @BindView(R.id.toolbar_title)
     TextView mToolbarTitle;
     @BindView(R.id.toolbar_rightButton)
-    ImageButton mToolbarRightButton;
+    Button mToolbarRightButton;
     private LayoutInflater mLayoutInflater;
     private View mView;
 
@@ -82,6 +85,15 @@ public class CnToolBar extends Toolbar {
 
     }
 
+    public void setRightButtonText(CharSequence text){
+        mToolbarRightButton.setText(text);
+        mToolbarRightButton.setVisibility(VISIBLE);
+    }
+
+    public void setRightButtonText(int id){
+        setRightButtonText(getResources().getString(id));
+    }
+
     public  void setRightButtonOnClickListener(OnClickListener li){
 
         mToolbarRightButton.setOnClickListener(li);
@@ -90,10 +102,17 @@ public class CnToolBar extends Toolbar {
     private void setRightButton(Drawable rightIcon) {
         if(mToolbarRightButton !=null){
 
-            mToolbarRightButton.setImageDrawable(rightIcon);
+            mToolbarRightButton.setBackground(rightIcon);
+//            mToolbarRightButton.setImageDrawable(rightIcon);
             mToolbarRightButton.setVisibility(VISIBLE);
         }
     }
+
+    public Button getRightButton(){
+
+        return this.mToolbarRightButton;
+    }
+
 
     private void initView() {
 
@@ -155,6 +174,21 @@ public class CnToolBar extends Toolbar {
 
     }
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    public void  setRightButtonIcon(Drawable icon){
+
+        if(mToolbarRightButton !=null){
+
+            mToolbarRightButton.setBackground(icon);
+            mToolbarRightButton.setVisibility(VISIBLE);
+        }
+
+    }
+
+    public void  setRightButtonIcon(int icon){
+
+        setRightButtonIcon(getResources().getDrawable(icon));
+    }
 
 
 }

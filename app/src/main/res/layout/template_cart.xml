@@ -28,8 +28,8 @@
         
         <com.facebook.drawee.view.SimpleDraweeView
             android:id="@+id/drawee_view"
-            android:layout_width="180dp"
-            android:layout_height="180dp"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
             />
 
 
@@ -47,7 +47,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:textColor="@color/gray"
-                android:textSize="16sp"
+                android:textSize="16dp"
                 android:maxLines="3"
 
                 />
@@ -56,12 +56,12 @@
                 android:id="@+id/text_price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="18sp"
+                android:textSize="18dp"
                 android:textColor="@color/crimson"
                 android:layout_gravity="right"
                 />
 
-           <cniao5.com.cniao5shop.widget.NumberAddSubView
+           <com.taotao.taotaoshangcheng.weight.NumberAddSubView
                android:id="@+id/num_control"
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"

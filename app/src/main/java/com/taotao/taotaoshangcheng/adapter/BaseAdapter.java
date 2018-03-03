@@ -11,10 +11,8 @@ import java.util.List;
 
 /**
  * Created by <a href="http://www.cniao5.com">菜鸟窝</a>
- * 一个专业的Android开发在线教育平台
  */
-public abstract class BaseAdapter<T,H extends  BaseViewHolder> extends RecyclerView.Adapter<BaseViewHolder>{
-
+public abstract class BaseAdapter<T, H extends BaseViewHolder> extends RecyclerView.Adapter<BaseViewHolder> {
 
 
     protected static final String TAG = BaseAdapter.class.getSimpleName();
@@ -29,11 +27,9 @@ public abstract class BaseAdapter<T,H extends  BaseViewHolder> extends RecyclerV
     private OnItemClickListener mOnItemClickListener = null;
 
 
-
-    public  interface OnItemClickListener {
+    public interface OnItemClickListener {
         void onItemClick(View view, int position);
     }
-
 
 
     public BaseAdapter(Context context, int layoutResId) {
@@ -48,26 +44,23 @@ public abstract class BaseAdapter<T,H extends  BaseViewHolder> extends RecyclerV
     }
 
 
-
-
     @Override
-    public BaseViewHolder onCreateViewHolder(ViewGroup viewGroup,  int viewType) {
+    public BaseViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         View view = LayoutInflater.from(viewGroup.getContext()).inflate(layoutResId, viewGroup, false);
-        BaseViewHolder vh = new BaseViewHolder(view,mOnItemClickListener);
+        BaseViewHolder vh = new BaseViewHolder(view, mOnItemClickListener);
         return vh;
     }
 
     @Override
-    public void onBindViewHolder(BaseViewHolder viewHoder,  int position) {
+    public void onBindViewHolder(BaseViewHolder viewHoder, int position) {
         T item = getItem(position);
-        convert((H)viewHoder, item);
+        convert((H) viewHoder, item);
     }
-
 
 
     @Override
     public int getItemCount() {
-        if(datas==null || datas.size()<=0)
+        if (datas == null || datas.size() <= 0)
             return 0;
 
         return datas.size();
@@ -80,23 +73,24 @@ public abstract class BaseAdapter<T,H extends  BaseViewHolder> extends RecyclerV
     }
 
 
-    public void clear(){
+    public void clear() {
         int itemCount = datas.size();
         datas.clear();
-        this.notifyItemRangeRemoved(0,itemCount);
+        this.notifyItemRangeRemoved(0, itemCount);
     }
 
-    public List<T> getDatas(){
+    public List<T> getDatas() {
 
-        return  datas;
-    }
-    public void addData(List<T> datas){
-
-        addData(0,datas);
+        return datas;
     }
 
-    public void addData(int position,List<T> datas){
-        if(datas !=null && datas.size()>0) {
+    public void addData(List<T> datas) {
+
+        addData(0, datas);
+    }
+
+    public void addData(int position, List<T> datas) {
+        if (datas != null && datas.size() > 0) {
 
             this.datas.addAll(datas);
             this.notifyItemRangeChanged(position, datas.size());
@@ -104,24 +98,19 @@ public abstract class BaseAdapter<T,H extends  BaseViewHolder> extends RecyclerV
     }
 
 
-
-
     /**
      * Implement this method and use the helper to adapt the view to the given item.
+     *
      * @param viewHoder A fully initialized helper.
-     * @param item   The item that needs to be displayed.
+     * @param item      The item that needs to be displayed.
      */
     protected abstract void convert(H viewHoder, T item);
-
-
 
 
     public void setOnItemClickListener(OnItemClickListener listener) {
         this.mOnItemClickListener = listener;
 
     }
-
-
 
 
 }

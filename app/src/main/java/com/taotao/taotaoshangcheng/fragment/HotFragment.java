@@ -15,16 +15,19 @@ import android.widget.Toast;
 
 import com.cjj.MaterialRefreshLayout;
 import com.cjj.MaterialRefreshListener;
+import com.google.gson.reflect.TypeToken;
 import com.squareup.okhttp.Response;
 import com.taotao.taotaoshangcheng.BuildConfig;
 import com.taotao.taotaoshangcheng.Contants;
 import com.taotao.taotaoshangcheng.R;
 import com.taotao.taotaoshangcheng.adapter.DividerItemDecortion;
+import com.taotao.taotaoshangcheng.adapter.HWAdatper;
 import com.taotao.taotaoshangcheng.adapter.HotWaresAdapter;
 import com.taotao.taotaoshangcheng.bean.Page;
 import com.taotao.taotaoshangcheng.bean.Wares;
 import com.taotao.taotaoshangcheng.http.OkHttpHelper;
 import com.taotao.taotaoshangcheng.http.SpotsCallBack;
+import com.taotao.taotaoshangcheng.utils.Pager;
 
 import java.util.List;
 
@@ -51,7 +54,8 @@ public class HotFragment extends Fragment {
     private static final String TAG = "HotFragment";
 
     private List<Wares> datas;
-    private HotWaresAdapter mHotWaresAdapter;
+//    private HotWaresAdapter mHotWaresAdapter;
+    private HWAdatper mHotWaresAdapter;
 
     private static final int STATE_NORMAL = 0;
     private static final int STATE_REFREH = 1;
@@ -68,9 +72,45 @@ public class HotFragment extends Fragment {
         unbinder = ButterKnife.bind(this, view);
 
 
-        getData();
-        initRefreshLayout();
+//        getData();
+//        initRefreshLayout();
 
+        Pager pager = Pager.newBuilder().setUrl(Contants.API.WARES_HOT).setLoadMore(true)
+                .setRefreshLayout(mRefreshView)
+                .setOnPageListener(new Pager.OnPageListener() {
+            @Override
+            public void load(List datas, int totalPage, int totalCount) {
+                mHotWaresAdapter = new HWAdatper(getContext(),datas);
+
+                mRecyclerview.setAdapter(mHotWaresAdapter);
+
+                mRecyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
+                mRecyclerview.setItemAnimator(new DefaultItemAnimator());
+                mRecyclerview.addItemDecoration(new DividerItemDecortion(getContext(), DividerItemDecortion.VERTICAL_LIST));
+            }
+
+            @Override
+            public void refresh(List datas, int totalPage, int totalCount) {
+                //先清空数据，再加载数据
+                if (BuildConfig.DEBUG) Log.d(TAG, "STATE_REFREH" + datas.size());
+                //直接赋值地址是一样的，不能清空
+                mHotWaresAdapter.clear();
+                //data变成了另外的引用
+                if (BuildConfig.DEBUG) Log.d(TAG, "STATE_REFREH" + datas.size());
+                //getData();
+                mHotWaresAdapter.addData(datas);
+                //设置recyclerview显示第一条数据
+                mRecyclerview.scrollToPosition(0);
+            }
+
+            @Override
+            public void loadMore(List datas, int totalPage, int totalCount) {
+                mHotWaresAdapter.addData(mHotWaresAdapter.getDatas().size(), datas);
+                mRecyclerview.scrollToPosition(mHotWaresAdapter.getDatas().size());
+            }
+        }).setPageSize(20).build(getContext(), new TypeToken<Page<Wares>>() {
+        }.getType());
+        pager.request();
 
         return view;
 
@@ -135,7 +175,7 @@ public class HotFragment extends Fragment {
     private void showData() {
         switch (state) {
             case STATE_NORMAL:
-                mHotWaresAdapter = new HotWaresAdapter(datas);
+                mHotWaresAdapter = new HWAdatper(getContext(),datas);
 
                 mRecyclerview.setAdapter(mHotWaresAdapter);
 
@@ -148,7 +188,7 @@ public class HotFragment extends Fragment {
                 //先清空数据，再加载数据
                 if (BuildConfig.DEBUG) Log.d(TAG, "STATE_REFREH" + datas.size());
                 //直接赋值地址是一样的，不能清空
-                mHotWaresAdapter.clearData();
+                mHotWaresAdapter.clear();
                 //data变成了另外的引用
                 if (BuildConfig.DEBUG) Log.d(TAG, "STATE_REFREH" + datas.size());
                 //getData();

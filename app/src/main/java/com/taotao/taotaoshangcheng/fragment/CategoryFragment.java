@@ -1,5 +1,6 @@
 package com.taotao.taotaoshangcheng.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -7,7 +8,6 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,17 +22,15 @@ import com.daimajia.slider.library.SliderTypes.TextSliderView;
 import com.daimajia.slider.library.Tricks.ViewPagerEx;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
-import com.taotao.taotaoshangcheng.BuildConfig;
 import com.taotao.taotaoshangcheng.Contants;
 import com.taotao.taotaoshangcheng.R;
+import com.taotao.taotaoshangcheng.WareDetailActivity;
 import com.taotao.taotaoshangcheng.adapter.BaseAdapter;
 import com.taotao.taotaoshangcheng.adapter.CategoryAdapter;
 import com.taotao.taotaoshangcheng.adapter.DividerItemDecortion;
-import com.taotao.taotaoshangcheng.adapter.HotWaresAdapter;
 import com.taotao.taotaoshangcheng.adapter.WaresAdapter;
 import com.taotao.taotaoshangcheng.bean.Banner;
 import com.taotao.taotaoshangcheng.bean.Category;
-import com.taotao.taotaoshangcheng.bean.HomeCampaign;
 import com.taotao.taotaoshangcheng.bean.Page;
 import com.taotao.taotaoshangcheng.bean.Wares;
 import com.taotao.taotaoshangcheng.decoration.DividerGridItemDecoration;
@@ -150,6 +148,7 @@ public class CategoryFragment extends Fragment {
 
     private void showCategoryData(List<Category> categories) {
         mCategoryAdapter = new CategoryAdapter(getContext(), categories);
+
         mCategoryAdapter.setOnItemClickListener(new BaseAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
@@ -287,11 +286,38 @@ public class CategoryFragment extends Fragment {
                 //防止间隙越来越大
                 if (mWaresAdapter != null) {
                     mWaresAdapter = new WaresAdapter(getContext(), wares);
+                    mWaresAdapter.setOnItemClickListener(new BaseAdapter.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(View view, int position) {
+//                Toast.makeText(getActivity(), "点击率", Toast.LENGTH_SHORT).show();
+
+                            Wares wares = mWaresAdapter.getItem(position);
+
+                            Intent intent = new Intent(getActivity(), WareDetailActivity.class);
+
+                            intent.putExtra(Contants.WARE, wares);
+                            startActivity(intent);
+
+                        }
+                    });
 
                     mRecyclerviewWares.setAdapter(mWaresAdapter);
                 } else {
                     mWaresAdapter = new WaresAdapter(getContext(), wares);
+                    mWaresAdapter.setOnItemClickListener(new BaseAdapter.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(View view, int position) {
+//                Toast.makeText(getActivity(), "点击率", Toast.LENGTH_SHORT).show();
 
+                            Wares wares = mWaresAdapter.getItem(position);
+
+                            Intent intent = new Intent(getActivity(), WareDetailActivity.class);
+
+                            intent.putExtra(Contants.WARE, wares);
+                            startActivity(intent);
+
+                        }
+                    });
                     mRecyclerviewWares.setAdapter(mWaresAdapter);
                     mRecyclerviewWares.setLayoutManager(new GridLayoutManager(getContext(), 2));
                     mRecyclerviewWares.setItemAnimator(new DefaultItemAnimator());

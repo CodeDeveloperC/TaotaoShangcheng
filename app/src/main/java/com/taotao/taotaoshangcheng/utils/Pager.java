@@ -5,9 +5,12 @@ import android.widget.Toast;
 
 import com.cjj.MaterialRefreshLayout;
 import com.cjj.MaterialRefreshListener;
+import com.google.gson.reflect.TypeToken;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
+import com.taotao.taotaoshangcheng.Contants;
 import com.taotao.taotaoshangcheng.bean.Page;
+import com.taotao.taotaoshangcheng.bean.Wares;
 import com.taotao.taotaoshangcheng.http.OkHttpHelper;
 import com.taotao.taotaoshangcheng.http.SpotsCallBack;
 
@@ -99,6 +102,8 @@ public class Pager {
 
     }
 
+
+
     /**
      * 显示数据
      */
@@ -106,7 +111,10 @@ public class Pager {
 
 
         if (datas == null || datas.size() <= 0) {
-            Toast.makeText(builder.mContext, "加载不到数据", Toast.LENGTH_LONG).show();
+            //采用默认数据
+//            Toast.makeText(builder.mContext, "加载不到数据", Toast.LENGTH_SHORT).show();
+
+            builder.reload();
             return;
         }
 
@@ -207,6 +215,17 @@ public class Pager {
 
         private OnPageListener onPageListener;
 
+        public  void reload() {
+            Pager.newBuilder().setUrl(Contants.API.WARES_CAMPAIN_LIST)
+                    .putParam("campaignId", 1)
+                    .putParam("orderBy", 0)
+                    .setRefreshLayout(mRefreshLayout)
+                    .setLoadMore(true)
+                    .setOnPageListener(onPageListener)
+                    .build(mContext, new TypeToken<Page<Wares>>() {
+                    }.getType()).request();
+        }
+
         public Builder setUrl(String url) {
 
             builder.mUrl = url;
@@ -283,7 +302,7 @@ public class Pager {
         public void onFailure(Request request, Exception e) {
 
             dismissDialog();
-            Toast.makeText(builder.mContext, "请求出错：" + e.getMessage(), Toast.LENGTH_LONG).show();
+//            Toast.makeText(builder.mContext, "请求出错：" + e.getMessage(), Toast.LENGTH_LONG).show();
 
             if (STATE_REFREH == state) {
                 builder.mRefreshLayout.finishRefresh();
@@ -299,7 +318,7 @@ public class Pager {
 
             builder.pageIndex = page.getCurrentPage();
             builder.pageSize = page.getPageSize();
-            builder.totalPage = page.getTotalPage();
+            builder.totalPage = page.getTotalCount() / page.getPageSize() + 1;
 
             showData(page.getList(), page.getTotalPage(), page.getTotalCount());
         }

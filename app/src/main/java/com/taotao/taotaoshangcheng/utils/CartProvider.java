@@ -5,14 +5,14 @@ import android.util.SparseArray;
 
 import com.google.gson.reflect.TypeToken;
 import com.taotao.taotaoshangcheng.bean.ShoppingCart;
+import com.taotao.taotaoshangcheng.bean.Wares;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
 /**
- * Created by <a href="http://www.cniao5.com">菜鸟窝</a>
- * 一个专业的Android开发在线教育平台
+ * 设置成单例解决bug
  */
 public class CartProvider {
 
@@ -21,18 +21,48 @@ public class CartProvider {
 
     //相当于一个map
     private SparseArray<ShoppingCart> datas = null;
+    private static CartProvider sCartProvider;
 
 
     private Context mContext;
 
+    public static CartProvider newInstance(Context context) {
+        if (sCartProvider == null) {
+            sCartProvider = new CartProvider(context);
+        }
+        return sCartProvider;
+    }
 
-    public CartProvider(Context context) {
+
+
+    private CartProvider(Context context) {
 
         mContext = context;
         datas = new SparseArray<>(10);
         listToSparse();
 
     }
+
+    public void put(Wares wares){
+
+
+        ShoppingCart cart = convertData(wares);
+        put(cart);
+    }
+
+    public ShoppingCart convertData(Wares item){
+
+        ShoppingCart cart = new ShoppingCart();
+
+        cart.setId(item.getId());
+        cart.setDescription(item.getDescription());
+        cart.setImgUrl(item.getImgUrl());
+        cart.setName(item.getName());
+        cart.setPrice(item.getPrice());
+
+        return cart;
+    }
+
 
 
     public void put(ShoppingCart cart) {

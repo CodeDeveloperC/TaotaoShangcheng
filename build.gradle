@@ -4,6 +4,9 @@ buildscript {
 
     repositories {
         maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
+        maven {
+            url "http://mvn.mob.com/android"
+        }
         google()
         jcenter()
     }
@@ -14,6 +17,7 @@ buildscript {
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
         classpath 'com.jakewharton:butterknife-gradle-plugin:8.5.1'
+        classpath 'com.mob.sdk:MobSDK:+'
     }
 }
 
@@ -31,3 +35,5 @@ allprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+

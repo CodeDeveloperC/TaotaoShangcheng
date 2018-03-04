@@ -25,7 +25,7 @@ public class HWAdatper extends SimpleAdapter<Wares> {
 
     public HWAdatper(Context context, List<Wares> datas) {
         super(context, R.layout.template_hot_wares, datas);
-        provider = new CartProvider(context);
+        provider = CartProvider.newInstance(context);
     }
 
     @Override
@@ -45,7 +45,21 @@ public class HWAdatper extends SimpleAdapter<Wares> {
                 ToastUtils.show(context,"已添加到购物车");
             }
         });
+
+        viewHolder.getTextView(R.id.text_price).setText(wares.getPrice().toString());
     }
+
+    public void  resetLayout(int layoutId){
+
+
+        this.layoutResId  = layoutId;
+
+        notifyItemRangeChanged(0,getDatas().size());
+
+
+    }
+
+
 
     public ShoppingCart convertData(Wares item){
 

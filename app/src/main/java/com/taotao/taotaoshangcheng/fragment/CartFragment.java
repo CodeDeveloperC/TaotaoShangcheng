@@ -1,6 +1,7 @@
 package com.taotao.taotaoshangcheng.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -13,11 +14,15 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
+import com.taotao.taotaoshangcheng.Contants;
 import com.taotao.taotaoshangcheng.MainActivity;
 import com.taotao.taotaoshangcheng.R;
+import com.taotao.taotaoshangcheng.WareDetailActivity;
+import com.taotao.taotaoshangcheng.adapter.BaseAdapter;
 import com.taotao.taotaoshangcheng.adapter.CartAdapter;
 import com.taotao.taotaoshangcheng.adapter.DividerItemDecortion;
 import com.taotao.taotaoshangcheng.bean.ShoppingCart;
+import com.taotao.taotaoshangcheng.bean.Wares;
 import com.taotao.taotaoshangcheng.utils.CartProvider;
 import com.taotao.taotaoshangcheng.weight.CnToolBar;
 
@@ -59,7 +64,7 @@ public class CartFragment extends Fragment implements View.OnClickListener {
         View view = inflater.inflate(R.layout.fragment_cart, container, false);
         unbinder = ButterKnife.bind(this, view);
 
-        mCartProvider = new CartProvider(getContext());
+        mCartProvider = CartProvider.newInstance(getContext());
 
         showData();
 
@@ -70,6 +75,21 @@ public class CartFragment extends Fragment implements View.OnClickListener {
         List<ShoppingCart> carts = mCartProvider.getAll();
 
         mCartAdapter = new CartAdapter(getContext(), carts, mCheckboxAll, mTxtTotal);
+
+        mCartAdapter.setOnItemClickListener(new BaseAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+//                Toast.makeText(getActivity(), "点击率", Toast.LENGTH_SHORT).show();
+
+                Wares wares = mCartAdapter.getItem(position);
+
+                Intent intent = new Intent(getActivity(), WareDetailActivity.class);
+
+                intent.putExtra(Contants.WARE, wares);
+                startActivity(intent);
+
+            }
+        });
 
         mRecyclerView.setAdapter(mCartAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -108,8 +128,10 @@ public class CartFragment extends Fragment implements View.OnClickListener {
         mCnToolBar.showTitleView();
         mCnToolBar.setTitle(R.string.cart);
         mCnToolBar.getRightButton().setVisibility(View.VISIBLE);
-        mCnToolBar.setRightButtonText("编辑");
+
         mCnToolBar.setRightButtonIcon(R.drawable.bg_btn_style_red);
+        mCnToolBar.setRightButtonText("编辑");
+        mCnToolBar.getRightButton().setPadding(0,0,0,0);
 
         mCnToolBar.getRightButton().setOnClickListener(this);
 

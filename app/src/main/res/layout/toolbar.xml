@@ -38,8 +38,7 @@
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:visibility="gone"
-        style="@android:style/Widget.Material.Toolbar.Button.Navigation"
-        />
+        android:layout_alignParentEnd="true" />
 
 
 

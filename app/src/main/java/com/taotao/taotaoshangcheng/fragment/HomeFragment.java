@@ -1,5 +1,6 @@
 package com.taotao.taotaoshangcheng.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -28,6 +29,7 @@ import com.squareup.okhttp.Response;
 import com.taotao.taotaoshangcheng.BuildConfig;
 import com.taotao.taotaoshangcheng.Contants;
 import com.taotao.taotaoshangcheng.R;
+import com.taotao.taotaoshangcheng.WareListActivity;
 import com.taotao.taotaoshangcheng.adapter.DividerItemDecortion;
 import com.taotao.taotaoshangcheng.adapter.HomeCatgoryAdapter;
 import com.taotao.taotaoshangcheng.bean.Banner;
@@ -238,7 +240,11 @@ public class HomeFragment extends Fragment {
         mAdatper.setOnCampaignClickListener(new HomeCatgoryAdapter.onCampaignClickListener() {
             @Override
             public void onClick(View view, Campaign campaign) {
-                Toast.makeText(getActivity(), campaign.getTitle(), Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getActivity(), campaign.getTitle(), Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getActivity(), WareListActivity.class);
+                intent.putExtra(Contants.COMPAINGAIN_ID,campaign.getId());
+
+                startActivity(intent);
             }
         });
 

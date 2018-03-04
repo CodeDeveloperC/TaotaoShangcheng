@@ -18,195 +18,178 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 
-
 public class OkHttpHelper {
 
 
+    public static final String TAG = "OkHttpHelper";
+
+    private static OkHttpHelper mInstance;
+    private OkHttpClient mHttpClient;
+    private Gson mGson;
+
+    private Handler mHandler;
 
 
+    static {
+        mInstance = new OkHttpHelper();
+    }
+
+    private OkHttpHelper() {
+
+        mHttpClient = new OkHttpClient();
+        mHttpClient.setConnectTimeout(10, TimeUnit.SECONDS);
+        mHttpClient.setReadTimeout(10, TimeUnit.SECONDS);
+        mHttpClient.setWriteTimeout(30, TimeUnit.SECONDS);
+
+        mGson = new Gson();
+
+        //更新UI
+        mHandler = new Handler(Looper.getMainLooper());
+
+    }
+
+    ;
+
+    public static OkHttpHelper getInstance() {
+        return mInstance;
+    }
 
 
-        public static final String TAG="OkHttpHelper";
+    public void get(String url, BaseCallback callback) {
 
-        private  static  OkHttpHelper mInstance;
-        private OkHttpClient mHttpClient;
-        private Gson mGson;
+        Request request = buildGetRequest(url);
 
-        private Handler mHandler;
+        request(request, callback);
 
-
-
-        static {
-            mInstance = new OkHttpHelper();
-        }
-
-        private OkHttpHelper(){
-
-            mHttpClient = new OkHttpClient();
-            mHttpClient.setConnectTimeout(10, TimeUnit.SECONDS);
-            mHttpClient.setReadTimeout(10,TimeUnit.SECONDS);
-            mHttpClient.setWriteTimeout(30,TimeUnit.SECONDS);
-
-            mGson = new Gson();
-
-            //更新UI
-            mHandler = new Handler(Looper.getMainLooper());
-
-        };
-
-        public static  OkHttpHelper getInstance(){
-            return  mInstance;
-        }
+    }
 
 
+    public void post(String url, Map<String, String> param, BaseCallback callback) {
+
+        Request request = buildPostRequest(url, param);
+        request(request, callback);
+    }
 
 
-        public void get(String url,BaseCallback callback){
+    public void request(final Request request, final BaseCallback callback) {
 
-            Request request = buildGetRequest(url);
+        callback.onBeforeRequest(request);
 
-            request(request,callback);
+        mHttpClient.newCall(request).enqueue(new Callback() {
 
-        }
+            @Override
+            public void onFailure(Request request, IOException e) {
+                callback.onFailure(request, e);
 
+            }
 
-        public void post(String url,Map<String,String> param, BaseCallback callback){
+            @Override
+            public void onResponse(Response response) throws IOException {
 
-            Request request = buildPostRequest(url,param);
-            request(request,callback);
-        }
+                callback.onResponse(response);
 
+                if (response.isSuccessful()) {
 
+                    String resultStr = response.body().string();
 
+                    Log.d(TAG, "result=" + resultStr);
 
+                    if (callback.mType == String.class) {
+                        callbackSuccess(callback, response, resultStr);
+                    } else {
+                        try {
 
-        public  void request(final Request request,final  BaseCallback callback){
-
-            callback.onBeforeRequest(request);
-
-            mHttpClient.newCall(request).enqueue(new Callback() {
-
-                @Override
-                public void onFailure(Request request, IOException e) {
-                    callback.onFailure(request,e);
-
-                }
-
-                @Override
-                public void onResponse(Response response) throws IOException {
-
-                    callback.onResponse(response);
-
-                    if(response.isSuccessful()) {
-
-                        String resultStr = response.body().string();
-
-                        Log.d(TAG, "result=" + resultStr);
-
-                        if (callback.mType == String.class){
-                            callbackSuccess(callback,response,resultStr);
-                        }
-                        else {
-                            try {
-
-                                Object obj = mGson.fromJson(resultStr, callback.mType);
-                                callbackSuccess(callback,response,obj);
-                            }
-                            catch (JsonParseException e){ // Json解析的错误
-                                callback.onError(response,response.code(),e);
-                            }
+                            Object obj = mGson.fromJson(resultStr, callback.mType);
+                            callbackSuccess(callback, response, obj);
+                        } catch (JsonParseException e) { // Json解析的错误
+                            callback.onError(response, response.code(), e);
                         }
                     }
-                    else {
-                        callbackError(callback,response,null);
-                    }
-
+                } else {
+                    callbackError(callback, response, null);
                 }
-            });
 
-
-        }
-
-
-        private void callbackSuccess(final  BaseCallback callback , final Response response, final Object obj ){
-
-            mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    callback.onSuccess(response, obj);
-                }
-            });
-        }
-
-
-        private void callbackError(final  BaseCallback callback , final Response response, final Exception e ){
-
-            mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    callback.onError(response,response.code(),e);
-                }
-            });
-        }
-
-
-
-        private  Request buildPostRequest(String url,Map<String,String> params){
-
-            return  buildRequest(url,HttpMethodType.POST,params);
-        }
-
-        private  Request buildGetRequest(String url){
-
-            return  buildRequest(url,HttpMethodType.GET,null);
-        }
-
-        private  Request buildRequest(String url,HttpMethodType methodType,Map<String,String> params){
-
-
-            Request.Builder builder = new Request.Builder()
-                    .url(url);
-
-            if (methodType == HttpMethodType.POST){
-                RequestBody body = builderFormData(params);
-                builder.post(body);
             }
-            else if(methodType == HttpMethodType.GET){
-                builder.get();
+        });
+
+
+    }
+
+
+    private void callbackSuccess(final BaseCallback callback, final Response response, final Object obj) {
+
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                callback.onSuccess(response, obj);
             }
+        });
+    }
 
 
-            return builder.build();
-        }
+    private void callbackError(final BaseCallback callback, final Response response, final Exception e) {
 
-
-
-        private RequestBody builderFormData(Map<String,String> params){
-
-
-            FormEncodingBuilder builder = new FormEncodingBuilder();
-
-            if(params !=null){
-
-                for (Map.Entry<String,String> entry :params.entrySet() ){
-
-                    builder.add(entry.getKey(),entry.getValue());
-                }
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                callback.onError(response, response.code(), e);
             }
+        });
+    }
 
-            return  builder.build();
 
+    private Request buildPostRequest(String url, Map<String, String> params) {
+
+        return buildRequest(url, HttpMethodType.POST, params);
+    }
+
+    private Request buildGetRequest(String url) {
+
+        return buildRequest(url, HttpMethodType.GET, null);
+    }
+
+    private Request buildRequest(String url, HttpMethodType methodType, Map<String, String> params) {
+
+
+        Request.Builder builder = new Request.Builder()
+                .url(url);
+
+        if (methodType == HttpMethodType.POST) {
+            RequestBody body = builderFormData(params);
+            builder.post(body);
+        } else if (methodType == HttpMethodType.GET) {
+            builder.get();
         }
 
 
+        return builder.build();
+    }
 
-        enum  HttpMethodType{
 
-            GET,
-            POST,
+    private RequestBody builderFormData(Map<String, String> params) {
 
+
+        FormEncodingBuilder builder = new FormEncodingBuilder();
+
+        if (params != null) {
+
+            for (Map.Entry<String, String> entry : params.entrySet()) {
+
+                builder.add(entry.getKey(), entry.getValue());
+            }
         }
 
+        return builder.build();
+
+    }
+
+
+    enum HttpMethodType {
+
+        GET,
+        POST,
+
+    }
 
 
 }
